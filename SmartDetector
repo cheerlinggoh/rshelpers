@@ -1,0 +1,156 @@
+Name: Cheerling Goh Pei Xuan, Joel Wong Yi Wei, Terence Charles Ong Peng Quan, Lim Yang Xun.
+Purpose: Detecting the amount of gas coming out from the gas canister. 
+If there's any leakage of flammable gas, warning alert will be given to the staff and customers.
+Sensor used: CO2, LED light.
+Actuator: Buzzer.
+Implementation: Gas sensor will be located at the area near the gas canister, LED light and Buzzer will be located at the customer table. 
+The staff will be notified by the display panel located at the cashier counter, through dashboard. 
+*CO2 sensor only work on Arduino board and not LINKIT board*
+
+Code: 
+#include <SoftwareSerial.h>
+#include <Wire.h>
+#include "rgb_lcd.h"
+
+#define DEBUG 0
+
+const int pinRx = 8;
+const int pinTx = 7;
+
+SoftwareSerial sensor(pinTx, pinRx);
+
+const unsigned char cmd_get_sensor[] =
+{
+  0xff, 0x01, 0x86, 0x00, 0x00,
+  0x00, 0x00, 0x00, 0x79
+};
+unsigned char dataRevice[9];
+int temperature;
+int CO2PPM;
+
+rgb_lcd lcd;
+const int colorR = 0;
+const int colorG = 0;
+const int colorB = 255;
+
+#define ledPin 2
+#define pinBuzzer 3
+
+int length = 15;         /* the number of notes */
+char notes[] = "cccc";
+int beats[] = {2};
+int tempo = 300;
+
+void setup()
+{
+  sensor.begin(9600);
+  Serial.begin(9600);
+  //Serial.println("get a 'g', begin to read from sensor!");
+  Serial.println("********************************************************");
+  Serial.println();
+
+  lcd.begin(16, 2);
+  lcd.setRGB(colorR, colorG, colorB);
+
+  pinMode(ledPin, OUTPUT);
+  pinMode(pinBuzzer, OUTPUT);
+}
+
+void loop()
+{
+  digitalWrite(ledPin, LOW);
+  if (dataRecieve())
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("CO2: ");
+    lcd.print(CO2PPM);
+    lcd.setCursor(0, 1);
+    lcd.print("Temp: ");
+    lcd.print(temperature);
+
+    if (CO2PPM == 1500 || CO2PPM > 1600)
+    {
+      digitalWrite(ledPin, HIGH);
+      for (int i = 0; i < length; i++) {
+        if (notes[i] == ' ') {
+          delay(beats[i] * tempo);
+        } else {
+          playNote(notes[i], beats[i] * tempo);
+        }
+        delay(tempo / 2);    /* delay between notes */
+      }
+
+      delay(100);
+    }
+    else
+    {
+      digitalWrite(ledPin, LOW);
+    }
+  }
+  delay(200);
+}
+
+bool dataRecieve(void)
+{
+  byte data[9];
+  int i = 0;
+
+  //transmit command data
+  for (i = 0; i < sizeof(cmd_get_sensor); i++)
+  {
+    sensor.write(cmd_get_sensor[i]);
+  }
+  delay(10);
+  //begin reveiceing data
+  if (sensor.available())
+  {
+    while (sensor.available())
+    {
+      for (int i = 0; i < 9; i++)
+      {
+        data[i] = sensor.read();
+      }
+    }
+  }
+
+#if DEBUG
+  for (int j = 0; j < 9; j++)
+  {
+    Serial.print(data[j]);
+    Serial.print(" ");
+  }
+  Serial.println("");
+#endif
+
+  if ((i != 9) || (1 + (0xFF ^ (byte)(data[1] + data[2] + data[3]
+                                      + data[4] + data[5] + data[6] + data[7]))) != data[8])
+  {
+    return false;
+  }
+  CO2PPM = (int)data[2] * 256 + (int)data[3];
+  temperature = (int)data[4] - 40;
+
+  return true;
+}
+
+void playTone(int tone, int duration) {
+  for (long i = 0; i < duration * 1000L; i += tone * 2) {
+    digitalWrite(pinBuzzer, HIGH);
+    delayMicroseconds(tone);
+    digitalWrite(pinBuzzer, LOW);
+    delayMicroseconds(tone);
+  }
+}
+
+void playNote(char note, int duration) {
+  char names[] = {'c'};
+  int tones[] = {1915};
+
+  // play the tone corresponding to the note name
+  for (int i = 0; i < 1; i++) {
+    if (names[i] == note) {
+      playTone(tones[i], duration);
+    }
+  }
+}

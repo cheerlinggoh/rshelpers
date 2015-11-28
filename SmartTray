@@ -1,0 +1,93 @@
+Name: Cheerling Goh Pei Xuan, Joel Wong Yi Wei, Terence Charles Ong Peng Quan, Lim Yang Xun.
+Purpose: Detecting the amount of food left on the tray by pressure.
+Sensor: Pressure.
+Actuator: Buzzer. 
+Implementation: When the amount of food left on the tray is below a certain pressure threshold, an alert will be send to the display panel as well as the buzzer will be triggered located at the kitchen.
+After which, the kitchen staff will replenish the food on the tray so there will be food for the customer. 
+
+Code: 
+// Flexiforce quick start example
+// Reads A0 every 100ms and sends voltage value over serial
+#define pinTouch 2
+#define pinBuzzer 3
+
+int length = 15;         /* the number of notes */
+char notes[] = "c";
+int beats[] = {1};
+int tempo = 300;
+
+void setup()
+{
+  // Start serial at 9600 baud
+  Serial.begin(9600);
+  pinMode(pinTouch, INPUT);
+  pinMode(pinBuzzer, OUTPUT);
+}
+
+void loop()
+{
+  // Read the input on analog pin 0:
+  int sensorValue = analogRead(A0);
+
+  // Convert the analog reading (which goes from 0 - 1023) to kilograms :
+  float grams = sensorValue * (0.45359237);
+  Serial.println("Kilograms: ");
+  Serial.println(grams);
+  if (grams == 5 || grams < 5)
+  {
+    for (int i = 0; i < length; i++)
+    {
+      if (notes[i] == ' ') {
+        delay(beats[i] * tempo);
+      }
+      else
+      {
+        playNote(notes[i], beats[i] * tempo);
+      }
+
+      //       delay(tempo / 2);    /* delay between notes */
+    }
+    delay(300);
+  }
+  int state = digitalRead(pinTouch);
+  if (state == 1) {
+    Serial.println("Table Number: ");
+    for (int i = 0; i < length; i++) {
+      if (notes[i] == ' ') {
+        delay(beats[i] * tempo);
+      } else {
+        playNote(notes[i], beats[i] * tempo);
+      }
+      delay(tempo / 2);    /* delay between notes */
+    }
+
+    delay(100);
+  }
+  else {
+    digitalWrite(pinBuzzer, LOW);
+  }
+  // Wait 300 milliseconds
+  delay(300);
+}
+
+
+void playTone(int tone, int duration) {
+  for (long i = 0; i < duration * 1000L; i += tone * 2) {
+    digitalWrite(pinBuzzer, HIGH);
+    delayMicroseconds(tone);
+    digitalWrite(pinBuzzer, LOW);
+    delayMicroseconds(tone);
+  }
+}
+
+void playNote(char note, int duration) {
+  char names[] = {'c'};
+  int tones[] = {1915};
+
+  // play the tone corresponding to the note name
+  for (int i = 0; i < 1; i++) {
+    if (names[i] == note) {
+      playTone(tones[i], duration);
+    }
+  }
+}

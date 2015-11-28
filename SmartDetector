@@ -4,7 +4,8 @@ If there's any leakage of flammable gas, warning alert will be given to the staf
 Sensor used: CO2, LED light.
 Actuator: Buzzer.
 Implementation: Gas sensor will be located at the area near the gas canister, LED light and Buzzer will be located at the customer table. 
-The staff will be notified by the display panel located at the cashier counter, through dashboard. 
+Whenever the level of gas reaches a certain threshold, the LED light and Buzzer will be triggered as well as 
+the staff will be notified by the display panel located at the cashier counter, through dashboard. 
 *CO2 sensor only work on Arduino board and not LINKIT board*
 
 Code: 

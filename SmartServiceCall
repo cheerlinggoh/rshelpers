@@ -1,8 +1,11 @@
 Name: Cheerling Goh Pei Xuan, Joel Wong Yi Wei, Terence Charles Ong Peng Quan, Lim Yang Xun.
-Purpose: Able to alert the staff with just a simple touch on the touch sensor. Having a much more efficient way for the restaurant to provide customer service, as well as the use of the manpower. 
+Purpose: Able to alert the staff with just a simple touch on the touch sensor. 
+Having a much more efficient way for the restaurant to provide customer service, as well as the use of the manpower. 
 Sensor used: Touch sensor. 
 Actuator used: Buzzer.
-Implementation: Touch sensor will be located on the customer table while the buzzer will be located at cashier counter. Whenever there is customer touching the sensor, the buzzer at the cashier counter will be triggered and alert the cashier. Lastly, the cashier will use walkie talkie to ask one of the staff to go over to the table, which the table number will appear on the display panel located at the counter.
+Implementation: Touch sensor will be located on the customer table while the buzzer will be located at cashier counter. 
+Whenever there is customer touching the sensor, the buzzer at the cashier counter will be triggered and alert the cashier. 
+Lastly, the cashier will use walkie talkie to ask one of the staff to go over to the table, which the table number will appear on the display panel located at the counter.
 
 Code: 
 #define pinTouch 2

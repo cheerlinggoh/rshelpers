@@ -2,4 +2,3 @@ Name: Cheerling Goh Pei Xuan, Joel Wong Yi Wei, Terence Charles Ong Peng Quan, L
 Sensor used: CO2, Pressure, Touch, LED Light.
 Actuator: Buzzer.
 Platform: Food and Beverages.
-Purpose of each file: There will be 3 different file names which is Smart Service Call, Smart Detector and Smart Tray.
